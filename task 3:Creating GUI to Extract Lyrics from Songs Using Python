@@ -1,0 +1,52 @@
+import tkinter as tk
+from tkinter import messagebox
+from lyricsgenius import Genius
+
+# Function to fetch lyrics
+def fetch_lyrics():
+    # Get the song and artist from the entry fields
+    song_title = entry_song.get().strip()
+    artist_name = entry_artist.get().strip()
+    
+    if not song_title or not artist_name:
+        messagebox.showwarning("Warning", "Please enter both song and artist")
+        return
+    
+    try:
+        # Search for the song lyrics
+        song = genius.search_song(song_title, artist_name)
+        
+        # Display lyrics in the text widget
+        text_lyrics.delete(1.0, tk.END)  # Clear previous lyrics
+        text_lyrics.insert(tk.END, song.lyrics)
+    except Exception as e:
+        messagebox.showerror("Error", f"An error occurred: {str(e)}")
+
+# Create main window
+root = tk.Tk()
+root.title("Lyrics Extractor")
+
+# Create labels and entry fields
+label_song = tk.Label(root, text="Song Title:")
+label_song.grid(row=0, column=0, padx=10, pady=10)
+entry_song = tk.Entry(root, width=40)
+entry_song.grid(row=0, column=1, padx=10, pady=10)
+
+label_artist = tk.Label(root, text="Artist Name:")
+label_artist.grid(row=1, column=0, padx=10, pady=10)
+entry_artist = tk.Entry(root, width=40)
+entry_artist.grid(row=1, column=1, padx=10, pady=10)
+
+# Button to fetch lyrics
+fetch_button = tk.Button(root, text="Fetch Lyrics", command=fetch_lyrics)
+fetch_button.grid(row=2, column=0, columnspan=2, pady=10)
+
+# Text widget to display lyrics
+text_lyrics = tk.Text(root, width=60, height=20, wrap=tk.WORD)
+text_lyrics.grid(row=3, column=0, columnspan=2, padx=10, pady=10)
+
+# Initialize Genius API with your Genius API access token
+genius = Genius("your_genius_api_access_token_here")
+
+# Run the main loop
+root.mainloop()
